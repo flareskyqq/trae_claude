@@ -12,6 +12,16 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "configuration": {
+      "title": "Claude Terminal Button",
+      "properties": {
+        "trae-claude-terminal.command": {
+          "type": "string",
+          "default": "claude",
+          "description": "The shell command sent to the terminal when creating or restoring a Claude terminal."
+        }
+      }
+    },
     "commands": [
       {
         "command": "trae-claude-terminal.open",

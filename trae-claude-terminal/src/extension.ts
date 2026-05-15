@@ -2,6 +2,13 @@ import * as vscode from 'vscode';
 
 const STATE_KEY = 'claudeTerminalNames';
 const DEFAULT_NAME = 'Claude Code';
+const CONFIG_COMMAND_KEY = 'command';
+
+function getCommand(): string {
+    return vscode.workspace
+        .getConfiguration('trae-claude-terminal')
+        .get<string>(CONFIG_COMMAND_KEY, 'claude');
+}
 
 // Track terminals created by this extension (by object reference, not name pattern)
 const trackedTerminals = new Set<vscode.Terminal>();
@@ -46,7 +53,7 @@ async function createClaudeTerminal(
         const terminal = vscode.window.createTerminal(options);
         trackedTerminals.add(terminal);
         // sendText may race with shell startup on slow machines
-        terminal.sendText('claude');
+        terminal.sendText(getCommand());
         terminal.show();
 
         await syncState(context);
@@ -77,7 +84,7 @@ function restoreTerminals(context: vscode.ExtensionContext): void {
             trackedTerminals.add(terminal);
             console.log(LOG_PREFIX, '  matched by name:', terminal.name);
             // Delay sendText — restored terminals may not have a ready shell yet
-            setTimeout(() => terminal.sendText('claude'), 300);
+            setTimeout(() => terminal.sendText(getCommand()), 300);
         }
     }
 
@@ -97,7 +104,7 @@ function restoreTerminals(context: vscode.ExtensionContext): void {
         if (untracked) {
             trackedTerminals.add(untracked);
             console.log(LOG_PREFIX, `  claimed untracked terminal "${untracked.name}" → "${name}"`);
-            setTimeout(() => untracked.sendText('claude'), 300);
+            setTimeout(() => untracked.sendText(getCommand()), 300);
         } else {
             // No untracked terminal to claim — create a fresh one
             const terminal = vscode.window.createTerminal({
@@ -106,7 +113,7 @@ function restoreTerminals(context: vscode.ExtensionContext): void {
             });
             trackedTerminals.add(terminal);
             console.log(LOG_PREFIX, `  created new terminal: "${name}"`);
-            setTimeout(() => terminal.sendText('claude'), 300);
+            setTimeout(() => terminal.sendText(getCommand()), 300);
         }
     }
 }
