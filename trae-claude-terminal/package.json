@@ -1,0 +1,44 @@
+{
+  "name": "trae-claude-terminal",
+  "displayName": "Claude Terminal Button",
+  "description": "One-click Claude terminal in editor area",
+  "version": "0.1.0",
+  "publisher": "local",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "trae-claude-terminal.open",
+        "title": "Open Claude Terminal",
+        "icon": {
+            "light": "icons/sparkle.svg",
+            "dark": "icons/sparkle.svg"
+          }
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "trae-claude-terminal.open",
+          "when": "editorIsOpen",
+          "group": "navigation"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "tsc -p ./",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.80.0",
+    "typescript": "^5.3.0"
+  }
+}
